@@ -1,0 +1,681 @@
+<!DOCTYPE HTML> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>RPi Wedstrijdklok</title>
+
+<script src="/static/jquery.min.js"></script>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                     Helvetica, Arial, sans-serif;
+        background:
+            radial-gradient(circle at top left, #dbeafe 0%, transparent 35%),
+            radial-gradient(circle at bottom right, #e0e7ff 0%, transparent 35%),
+            #f3f4f6;
+        color: #1f2937;
+    }
+
+    .page {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 20px 50px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .header-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 12px;
+        border-radius: 999px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .header h1 {
+        margin: 0;
+        color: #111827;
+        font-size: clamp(28px, 5vw, 42px);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+
+    .header p {
+        margin: 10px 0 0;
+        color: #6b7280;
+        font-size: 15px;
+    }
+
+    .section {
+        margin-bottom: 22px;
+        padding: 24px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(229, 231, 235, 0.9);
+        border-radius: 18px;
+        box-shadow:
+            0 10px 25px rgba(15, 23, 42, 0.06),
+            0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .section-icon {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 11px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 19px;
+    }
+
+    .section h2 {
+        margin: 0;
+        color: #111827;
+        font-size: 20px;
+        font-weight: 750;
+    }
+
+    .section h4 {
+        margin: 10;
+        color: #ff0000;
+        font-size: 16px;
+        font-weight: 650;
+    }
+
+    .section-description {
+        margin: -12px 0 20px 50px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .control {
+        display: flex;
+        align-items: right;
+        justify-content: space-between;
+        gap: 15px;
+        min-height: 54px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .control:last-child {
+        border-bottom: none;
+    }
+
+    .control-label {
+        color: #374151;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .control-description {
+        display: block;
+        margin-top: 3px;
+        color: #9ca3af;
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+    button {
+        min-width: 44px;
+        min-height: 40px;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 650;
+        cursor: pointer;
+        transition:
+            background 0.15s ease,
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+        box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+    }
+
+    button:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+    }
+
+    .icon-button {
+        width: 44px;
+        padding: 8px;
+        font-size: 20px;
+    }
+
+    .secondary-button {
+        background: #eef2ff;
+        color: #3730a3;
+        box-shadow: none;
+    }
+
+    .secondary-button:hover {
+        background: #e0e7ff;
+        color: #312e81;
+        box-shadow: none;
+    }
+
+    .input-row {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        width: 100%;
+    }
+
+    input[type="time"],
+    input[type="text"] {
+        height: 42px;
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #111827;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        transition:
+            border-color 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+    input[type="time"]:focus,
+    input[type="text"]:focus {
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    input[type="time"] {
+        width: 150px;
+    }
+
+    input[type="text"] {
+        flex: 1;
+        width: auto !important;
+        min-width: 0;
+    }
+
+    .time-row {
+    align-items: center;
+    justify-content: space-between;
+      }
+
+      .time-row > div:first-child {
+          flex: 1;
+      }
+
+      .time-row .input-row {
+          width: auto;
+          flex-shrink: 0;
+          justify-content: flex-end;
+      }
+
+
+    .api-data {
+        margin-bottom: 15px;
+        padding: 15px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+    }
+
+    .data-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 15px;
+        padding: 9px 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .data-row:last-child {
+        border-bottom: none;
+    }
+
+    .data-label {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .data-value {
+        min-width: 90px;
+        color: #111827;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+                     Consolas, "Liberation Mono", monospace;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: right;
+    }
+
+    .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 15px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #2563eb;
+        cursor: pointer;
+    }
+
+    .action-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .api-config-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .api-config-row:last-of-type {
+        margin-bottom: 20px;
+    }
+
+    .current-values {
+        margin-top: 10px;
+        padding: 15px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+    }
+
+    .footer {
+        text-align: center;
+        padding-top: 8px;
+        color: #9ca3af;
+        font-size: 12px;
+    }
+
+    @media (max-width: 650px) {
+        .page {
+            padding: 20px 12px 35px;
+        }
+
+        .section {
+            padding: 18px;
+            border-radius: 15px;
+        }
+
+        .control {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .control > button {
+            align-self: flex-end;
+        }
+
+        .time-row {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .input-row {
+            flex-wrap: wrap;
+        }
+
+        .input-row button {
+            flex: 1;
+        }
+
+        input[type="time"] {
+            width: 100%;
+        }
+
+        .api-config-row {
+            flex-wrap: wrap;
+        }
+
+        .api-config-row input {
+            width: 100% !important;
+            flex: 1 1 100%;
+        }
+
+        .api-config-row button {
+            width: 100%;
+        }
+
+        .section-description {
+            margin-left: 0;
+        }
+    }
+</style>
+
+</head> <body> <div class="page">
+<header class="header">
+    <h1>RPi Raceclock Interface</h1>
+</header>
+
+<!-- Manual Controls -->
+<section class="section">
+
+    <div class="section-header">
+        <div class="section-icon">⏱</div>
+        <h2>Manual Controls</h2>
+    </div>
+
+        <h4>Make sure <i>"Update clock automatically"</i> is unchecked</h4>
+
+    <div class="control">
+        <div>
+            <div class="control-label">Reset clock</div>
+            <span class="control-description">
+                Reset the clock to show the current time
+            </span>
+        </div>
+
+        <button class="icon-button" id="resetclock" title="Reset clock">
+            &#8635;
+        </button>
+    </div>
+
+    <div class="control">
+        <div>
+            <div class="control-label">10 seconds countdown</div>
+            <span class="control-description">
+                Toggle the 10 seconds countdown
+            </span>
+        </div>
+
+        <button id="toggle10sec">10s</button>
+    </div>
+
+    <div class="control time-row">
+        <div>
+            <div class="control-label">Set clock manually</div>
+            <span class="control-description">
+                Choose a time and start counting up or down
+            </span>
+        </div>
+
+        <div class="input-row">
+            <input type="time" id="timeuser" step="1">
+            <button id="senduserup">Count up</button>
+            <button id="senduserdown">Count down</button>
+        </div>
+    </div>
+
+</section>
+
+<!-- API Controls -->
+<section class="section">
+
+    <div class="section-header">
+        <div class="section-icon">⇄</div>
+        <h2>API Controls</h2>
+    </div>
+
+        <h4>Make sure <i>"10 seconds countdown"</i> is off (-10)</h4>
+
+    <label class="checkbox-row">
+        <input type="checkbox" id="autoAPIupdatecheckbox" checked>
+        <span>Update clock automatically</span>
+    </label>
+    
+    <label class="checkbox-row">
+        <input type="checkbox" id="showinglapscheckbox">
+        <span>Display lap counter</span>
+    </label>
+
+    <div class="api-data">
+
+        <div class="data-row">
+            <span class="data-label">Heat finished</span>
+            <span class="data-value" id="currentHFbool">--</span>
+        </div>
+
+        <div class="data-row">
+            <span class="data-label">Heat count up</span>
+            <span class="data-value" id="currentHCUtime">--</span>
+        </div>
+
+        <div class="data-row">
+            <span class="data-label">Heat count down</span>
+            <span class="data-value" id="currentHCDtime">--</span>
+        </div>
+        
+        <div class="data-row">
+            <span class="data-label">Heat laps</span>
+            <span class="data-value" id="currentHLtime">--</span>
+        </div>
+
+    </div>
+
+    <div class="action-row">
+        <button id="getAPIdata" class="secondary-button">
+            &#x21C4; &nbsp; Display data
+        </button>
+
+        <button id="setAPIdata">
+            &#x2713; &nbsp; Update clock
+        </button>
+    </div>
+
+</section>
+
+<!-- API Configuration -->
+<section class="section">
+
+    <div class="section-header">
+        <div class="section-icon">⚙</div>
+        <h2>API Configuration</h2>
+    </div>
+
+    <div class="api-config-row">
+        <input
+            type="text"
+            id="sendIPinput"
+            placeholder="Enter custom IP address here ..."
+        >
+        <button id="sendIPbutton">Send</button>
+    </div>
+
+    <div class="api-config-row">
+        <input
+            type="text"
+            id="sendeventidinput"
+            placeholder="Enter custom id here ..."
+        >
+        <button id="sendeventidbutton">Send</button>
+    </div>
+
+    <div class="api-config-row">
+        <input
+            type="text"
+            id="sendAPIkeyinput"
+            placeholder="Enter custom key here..."
+        >
+        <button id="sendAPIkeybutton">Send</button>
+    </div>
+
+    <div class="current-values">
+
+	<div class="data-row">
+            <span class="data-label">IP address</span>
+            <span class="data-value" id="currentIPbox">--</span>
+        </div>
+
+        <div class="data-row">
+            <span class="data-label">ID</span>
+            <span class="data-value" id="currenteventidbox">--</span>
+        </div>
+
+        <div class="data-row">
+            <span class="data-label">Key</span>
+            <span class="data-value" id="currentAPIkeybox">--</span>
+        </div>
+
+    </div>
+
+    <div class="action-row">
+        <button
+            id="showkeyidipbutton"
+            class="secondary-button"
+        >
+            &#x21C4; &nbsp; Display IP, ID and Key
+        </button>
+
+        <button id="fetchkeyidbutton">
+            &#x21C4; &nbsp; Fetch ID and Key
+        </button>
+    </div>
+
+</section>
+
+<div class="footer">
+    &#169 Jan van Steenlandt 2026
+</div>
+
+</div> <script> // API keys
+   
+document.getElementById("sendIPbutton").addEventListener("click",function() {
+      var text = document.getElementById("sendIPinput").value;
+      $.getJSON("/sendIP",{text:text}, function(data) {
+            console.log(data);
+      });
+});
+   
+document.getElementById("sendeventidbutton").addEventListener("click",function() {
+      var text = document.getElementById("sendeventidinput").value;
+      $.getJSON("/sendeventid",{text:text}, function(data) {
+            console.log(data);
+      });
+});
+            
+document.getElementById("sendAPIkeybutton").addEventListener("click",function() {
+    var text = document.getElementById("sendAPIkeyinput").value;
+    $.getJSON("/sendAPIkey",{text:text}, function(data) {
+        console.log(data);
+    });
+});
+
+document.getElementById("showkeyidipbutton").addEventListener("click",function() {
+    fetch("/showkeyidip")
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            document.getElementById("currenteventidbox").textContent = data.text1;
+            document.getElementById("currentAPIkeybox").textContent = data.text2;
+			document.getElementById("currentIPbox").textContent = data.text3
+        });
+});
+
+document.getElementById("fetchkeyidbutton").addEventListener("click",function() {
+    fetch("/fetchkeyid")
+});
+
+// Manual controls
+// Reset clock
+document.getElementById("resetclock").addEventListener("click",function() {
+    $.getJSON("/resetclock", function(data) {
+        console.log(data);
+    });
+});
+
+// Toggle 10s
+document.getElementById("toggle10sec").addEventListener("click",function() {
+    $.getJSON("/toggle10sec", function(data) {
+        console.log(data);
+    });
+});
+
+// Display time directly
+document.getElementById("senduserup").addEventListener("click",function() {
+    var time = document.getElementById("timeuser").value;
+    $.getJSON("/senduserup",{time:time}, function(data) {
+        console.log(data);
+    });
+});
+
+document.getElementById("senduserdown").addEventListener("click",function() {
+    var time = document.getElementById("timeuser").value;
+    $.getJSON("/senduserdown",{time:time}, function(data) {
+        console.log(data);
+    });
+});
+
+// API Controls
+
+document.getElementById("autoAPIupdatecheckbox").addEventListener("change", function() {
+    var checked = this.checked;
+
+    $.getJSON("/autoAPIupdate", {checked: checked}, function(data) {
+        console.log(data);
+    });
+});
+
+document.getElementById("showinglapscheckbox").addEventListener("change", function() {
+    var checked = this.checked;
+
+    $.getJSON("/showinglaps", {checked: checked}, function(data) {
+        console.log(data);
+    });
+});
+
+document.getElementById("getAPIdata").addEventListener("click",function() {
+    fetch("/getAPIdata")
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            document.getElementById("currentHFbool").textContent = data.text1;
+            document.getElementById("currentHCUtime").textContent = data.text2;
+            document.getElementById("currentHCDtime").textContent = data.text3;
+            document.getElementById("currentHLtime").textContent = data.text4
+        });
+});
+
+document.getElementById("setAPIdata").addEventListener("click",function() {
+    $.getJSON("/setAPIdata", function(data) {
+        console.log(data);
+    });
+});
+
+</script> </body> </html>
