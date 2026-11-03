@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 # Inputs
 # None
 
-# Example get eventid: http://192.168.12.11/api/local/eventlist?&lang=en
+# Example url1 get event id: http://192.168.12.11/api/local/eventlist?&lang=en
 # Result: [{"ID":"414218","FileName":"VMC_2026-2027_Nunspeet Werk.ses","EventName":"Veluwse MTB Competitie 2026/2027","EventDate":"2026-10-24","CheckedOut":false,"Participants":208,"NotActivated":0,"EventLogo":"logo_VMC.png","EventType":2}]
 
 # Example url2 get API key: http://192.168.12.11/_414218/api/simpleapi/get?&lang=en&pw=0
@@ -16,7 +16,7 @@ import xml.etree.ElementTree as ET
 
 # Example url API request initiated in raceclock_webinterface.py
 # http://192.168.12.11/_414218/api/MOQVKU55PZPUR0I0SK5TE64AR2J664RY
-#Result:
+# Result:
 # <list>
 #  <record>
 #   <HeatFinished>0</HeatFinished>
@@ -93,6 +93,3 @@ def fetchdata(url):
         HL = "00:00:00"
 
     return foundAPI, HF, HCU, HCD, HL
-
-# foundAPI, eventid, APIkey = fetcheventidAPIkey()
-# url = "http://"+IP+"/_"+eventid+"/api/"+APIkey

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>RPi Wedstrijdklok</title>
+<title>RPi Raceclock</title>
 
 <script src="/static/jquery.min.js"></script>
 
@@ -139,7 +139,7 @@
     }
 
     button {
-        min-width: 44px;
+        min-width: 60px;
         min-height: 40px;
         padding: 8px 15px;
         border: none;
@@ -169,12 +169,13 @@
     }
 
     .icon-button {
-        width: 44px;
+        width: 60px;
         padding: 8px;
         font-size: 20px;
     }
 
     .secondary-button {
+		min-width: 140px;
         background: #eef2ff;
         color: #3730a3;
         box-shadow: none;
@@ -236,7 +237,7 @@
 
       .time-row .input-row {
           width: auto;
-          flex-shrink: 0;
+          flex-shrink: 1;
           justify-content: flex-end;
       }
 
@@ -342,7 +343,7 @@
 
         .control {
             align-items: flex-start;
-            flex-direction: column;
+            flex-direction: row;
         }
 
         .control > button {
@@ -385,61 +386,12 @@
     }
 </style>
 
-</head> <body> <div class="page">
+</head>
+<body>
+<div class="page">
 <header class="header">
     <h1>RPi Raceclock Interface</h1>
 </header>
-
-<!-- Manual Controls -->
-<section class="section">
-
-    <div class="section-header">
-        <div class="section-icon">⏱</div>
-        <h2>Manual Controls</h2>
-    </div>
-
-        <h4>Make sure <i>"Update clock automatically"</i> is unchecked</h4>
-
-    <div class="control">
-        <div>
-            <div class="control-label">Reset clock</div>
-            <span class="control-description">
-                Reset the clock to show the current time
-            </span>
-        </div>
-
-        <button class="icon-button" id="resetclock" title="Reset clock">
-            &#8635;
-        </button>
-    </div>
-
-    <div class="control">
-        <div>
-            <div class="control-label">10 seconds countdown</div>
-            <span class="control-description">
-                Toggle the 10 seconds countdown
-            </span>
-        </div>
-
-        <button id="toggle10sec">10s</button>
-    </div>
-
-    <div class="control time-row">
-        <div>
-            <div class="control-label">Set clock manually</div>
-            <span class="control-description">
-                Choose a time and start counting up or down
-            </span>
-        </div>
-
-        <div class="input-row">
-            <input type="time" id="timeuser" step="1">
-            <button id="senduserup">Count up</button>
-            <button id="senduserdown">Count down</button>
-        </div>
-    </div>
-
-</section>
 
 <!-- API Controls -->
 <section class="section">
@@ -487,11 +439,10 @@
 
     <div class="action-row">
         <button id="getAPIdata" class="secondary-button">
-            &#x21C4; &nbsp; Display data
+			Display data
         </button>
-
-        <button id="setAPIdata">
-            &#x2713; &nbsp; Update clock
+        <button id="setAPIdata" style="min-width: 140px;">
+			Update clock
         </button>
     </div>
 
@@ -511,7 +462,9 @@
             id="sendIPinput"
             placeholder="Enter custom IP address here ..."
         >
-        <button id="sendIPbutton">Send</button>
+        <button id="sendIPbutton">
+			Send
+		</button>
     </div>
 
     <div class="api-config-row">
@@ -520,16 +473,20 @@
             id="sendeventidinput"
             placeholder="Enter custom id here ..."
         >
-        <button id="sendeventidbutton">Send</button>
+        <button id="sendeventidbutton"> 
+			Send
+		</button>
     </div>
 
     <div class="api-config-row">
         <input
             type="text"
             id="sendAPIkeyinput"
-            placeholder="Enter custom key here..."
+            placeholder="Enter custom key here ..."
         >
-        <button id="sendAPIkeybutton">Send</button>
+        <button id="sendAPIkeybutton">
+			Send
+		</button>
     </div>
 
     <div class="current-values">
@@ -552,16 +509,90 @@
     </div>
 
     <div class="action-row">
-        <button
-            id="showkeyidipbutton"
-            class="secondary-button"
-        >
-            &#x21C4; &nbsp; Display IP, ID and Key
+        <button id="showkeyidipbutton" class="secondary-button">
+			Display API
         </button>
+        <button id="fetchkeyidbutton" style="min-width: 140px;">
+			Fetch API
+        </button>
+    </div>
 
-        <button id="fetchkeyidbutton">
-            &#x21C4; &nbsp; Fetch ID and Key
+</section>
+
+<!-- Manual Controls -->
+<section class="section">
+
+    <div class="section-header">
+        <div class="section-icon">⏱</div>
+        <h2>Manual Controls</h2>
+    </div>
+
+        <h4>Make sure <i>"Update clock automatically"</i> is unchecked</h4>
+
+    <div class="control time-row">
+        <div>
+            <div class="control-label">Set clock manually</div>
+            <span class="control-description">
+                Choose a time
+            </span>
+        </div>
+        <div class="input-row">
+            <input type="time" id="timeuser" step="1">
+            <button id="senduserup" style="min-width: 120px;">
+				Count up
+			</button>
+            <button id="senduserdown" style="min-width: 120px;">
+				Count down
+			</button>
+        </div>
+    </div>
+
+    <div class="control">
+        <div>
+            <div class="control-label">Reset clock</div>
+            <span class="control-description">
+                Reset to show the current time
+            </span>
+        </div>
+        <button class="icon-button" id="resetclock" title="Reset clock">
+            &#8635;
         </button>
+    </div>
+
+    <div class="control">
+        <div>
+            <div class="control-label">10 seconds countdown</div>
+            <span class="control-description">
+                Toggle the 10 seconds countdown
+            </span>
+        </div>
+        <button class="icon-button" id="toggle10sec"  title="Toggle 10sec">
+			&#8635;
+		</button>
+    </div>
+
+    <div class="control">
+        <div>
+            <div class="control-label">Brightness</div>
+            <span class="control-description">
+                Toggle brightness
+            </span>
+        </div>
+        <button class="icon-button" id="togglebrightness"  title="Toggle brightness">
+			&#8635;
+		</button>
+    </div>
+
+    <div class="control">
+        <div>
+            <div class="control-label">Volume</div>
+            <span class="control-description">
+                Toggle volume
+            </span>
+        </div>
+        <button class="icon-button" id="togglevolume"  title="Toggle volume">
+			&#8635;
+		</button>
     </div>
 
 </section>
@@ -570,78 +601,11 @@
     &#169 Jan van Steenlandt 2026
 </div>
 
-</div> <script> // API keys
-   
-document.getElementById("sendIPbutton").addEventListener("click",function() {
-      var text = document.getElementById("sendIPinput").value;
-      $.getJSON("/sendIP",{text:text}, function(data) {
-            console.log(data);
-      });
-});
-   
-document.getElementById("sendeventidbutton").addEventListener("click",function() {
-      var text = document.getElementById("sendeventidinput").value;
-      $.getJSON("/sendeventid",{text:text}, function(data) {
-            console.log(data);
-      });
-});
-            
-document.getElementById("sendAPIkeybutton").addEventListener("click",function() {
-    var text = document.getElementById("sendAPIkeyinput").value;
-    $.getJSON("/sendAPIkey",{text:text}, function(data) {
-        console.log(data);
-    });
-});
-
-document.getElementById("showkeyidipbutton").addEventListener("click",function() {
-    fetch("/showkeyidip")
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            console.log(data);
-            document.getElementById("currenteventidbox").textContent = data.text1;
-            document.getElementById("currentAPIkeybox").textContent = data.text2;
-			document.getElementById("currentIPbox").textContent = data.text3
-        });
-});
-
-document.getElementById("fetchkeyidbutton").addEventListener("click",function() {
-    fetch("/fetchkeyid")
-});
-
-// Manual controls
-// Reset clock
-document.getElementById("resetclock").addEventListener("click",function() {
-    $.getJSON("/resetclock", function(data) {
-        console.log(data);
-    });
-});
-
-// Toggle 10s
-document.getElementById("toggle10sec").addEventListener("click",function() {
-    $.getJSON("/toggle10sec", function(data) {
-        console.log(data);
-    });
-});
-
-// Display time directly
-document.getElementById("senduserup").addEventListener("click",function() {
-    var time = document.getElementById("timeuser").value;
-    $.getJSON("/senduserup",{time:time}, function(data) {
-        console.log(data);
-    });
-});
-
-document.getElementById("senduserdown").addEventListener("click",function() {
-    var time = document.getElementById("timeuser").value;
-    $.getJSON("/senduserdown",{time:time}, function(data) {
-        console.log(data);
-    });
-});
+</div>
+<script> 
 
 // API Controls
-
+// Update clock automatically
 document.getElementById("autoAPIupdatecheckbox").addEventListener("change", function() {
     var checked = this.checked;
 
@@ -650,6 +614,7 @@ document.getElementById("autoAPIupdatecheckbox").addEventListener("change", func
     });
 });
 
+// Display lap counter
 document.getElementById("showinglapscheckbox").addEventListener("change", function() {
     var checked = this.checked;
 
@@ -658,6 +623,7 @@ document.getElementById("showinglapscheckbox").addEventListener("change", functi
     });
 });
 
+// Display current API data
 document.getElementById("getAPIdata").addEventListener("click",function() {
     fetch("/getAPIdata")
         .then(function(response) {
@@ -672,10 +638,104 @@ document.getElementById("getAPIdata").addEventListener("click",function() {
         });
 });
 
+// Update clock with current API data
 document.getElementById("setAPIdata").addEventListener("click",function() {
     $.getJSON("/setAPIdata", function(data) {
         console.log(data);
     });
 });
 
-</script> </body> </html>
+
+// API Configuration
+// Configure custom IP address
+document.getElementById("sendIPbutton").addEventListener("click",function() {
+      var text = document.getElementById("sendIPinput").value;
+      $.getJSON("/sendIP",{text:text}, function(data) {
+            console.log(data);
+      });
+});
+   
+// Configure custom event id   
+document.getElementById("sendeventidbutton").addEventListener("click",function() {
+      var text = document.getElementById("sendeventidinput").value;
+      $.getJSON("/sendeventid",{text:text}, function(data) {
+            console.log(data);
+      });
+});
+            
+// Configure custom API key
+document.getElementById("sendAPIkeybutton").addEventListener("click",function() {
+    var text = document.getElementById("sendAPIkeyinput").value;
+    $.getJSON("/sendAPIkey",{text:text}, function(data) {
+        console.log(data);
+    });
+});
+
+// Display API data
+document.getElementById("showkeyidipbutton").addEventListener("click",function() {
+    fetch("/showkeyidip")
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            document.getElementById("currenteventidbox").textContent = data.text1;
+            document.getElementById("currentAPIkeybox").textContent = data.text2;
+			document.getElementById("currentIPbox").textContent = data.text3
+        });
+});
+
+// Fetch API data
+document.getElementById("fetchkeyidbutton").addEventListener("click",function() {
+    fetch("/fetchkeyid")
+});
+
+
+// Manual controls
+// Start custom time count-up
+document.getElementById("senduserup").addEventListener("click",function() {
+    var time = document.getElementById("timeuser").value;
+    $.getJSON("/senduserup",{time:time}, function(data) {
+        console.log(data);
+    });
+});
+
+// Start custom time count-down
+document.getElementById("senduserdown").addEventListener("click",function() {
+    var time = document.getElementById("timeuser").value;
+    $.getJSON("/senduserdown",{time:time}, function(data) {
+        console.log(data);
+    });
+});
+
+// Reset clock for current time
+document.getElementById("resetclock").addEventListener("click",function() {
+    $.getJSON("/resetclock", function(data) {
+        console.log(data);
+    });
+});
+
+// Toggle 10s
+document.getElementById("toggle10sec").addEventListener("click",function() {
+    $.getJSON("/toggle10sec", function(data) {
+        console.log(data);
+    });
+});
+
+// Toggle brightness
+document.getElementById("togglebrightness").addEventListener("click",function() {
+    $.getJSON("/togglebrightness", function(data) {
+        console.log(data);
+    });
+});
+
+// Toggle volume
+document.getElementById("togglevolume").addEventListener("click",function() {
+    $.getJSON("/togglevolume", function(data) {
+        console.log(data);
+    });
+});
+
+</script>
+</body>
+</html>

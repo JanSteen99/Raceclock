@@ -5,7 +5,7 @@
 # Inputs
 delay = 0.05
 
-import time as timesleep
+import time
 import pigpio
 from ircodec.command import CommandSet
 
@@ -36,16 +36,15 @@ def resetclock(static):
     # Resets the raceclock to show the current time
     # Input:
     # - static: if static (in edit mode), two times ok needed to reset bool
-    timesleep.sleep(delay)
+    time.sleep(delay)
     clockremote.emit('exitt')
-    timesleep.sleep(delay)
+    time.sleep(delay)
     clockremote.emit('ok')
 
     if static:
-        # timesleep.sleep(11) # In case 10 sec timer is on
-        timesleep.sleep(delay)
+        time.sleep(delay)
         clockremote.emit('ok')
-    timesleep.sleep(delay)
+    time.sleep(delay)
     clockremote.emit('clock')
 
     return None
@@ -54,12 +53,30 @@ def toggle10sectimer():
     global static
     # Toggles the 10 sec countdown timer
     resetclock(static)
-    timesleep.sleep(delay)
-    clockremote.emit('updn')
-    timesleep.sleep(delay)
+    time.sleep(delay)
+    clockremote.emit('arrow_down')
+    time.sleep(delay)
     clockremote.emit('10s')
-    timesleep.sleep(1) # This specific command takes longer
+    time.sleep(1) # This specific command takes longer
     clockremote.emit('clock')
+
+    return None
+
+def togglebrightness():
+    global static
+    # Toggles brightness led's
+    clockremote.emit('brightness')
+
+    return None
+
+def togglevolume():
+    global static
+    # Toggles volume
+    clockremote.emit('volume')
+    time.sleep(delay)
+    clockremote.emit('arrow_up')
+    time.sleep(delay)
+    resetclock(static)
 
     return None
 
@@ -67,50 +84,50 @@ def transmitlaps(laptime):
     global static
     # Transmits a static display of the laps
     # Inputs:
-    # - laptime: str format "LL:00:00"
+    # - laptime: str format e.g. "LL:00:00" or "00:0L:LL"
     print("Transmitting lap ",laptime)
     resetclock(static)
-    timesleep.sleep(delay)
-    clockremote.emit('arrow_up')
-    timesleep.sleep(delay)
+    time.sleep(delay)
+    clockremote.emit('arrow_down')
+    time.sleep(delay)
     clockremote.emit('edit')
 
     for digit in laptime:
         if not digit == ':':
             print(digit)
-            timesleep.sleep(delay)
+            time.sleep(delay)
             clockremote.emit(digit)
-    timesleep.sleep(delay)
+    time.sleep(delay)
     clockremote.emit('edit')
     static = True
 
     return None
     
 def transmitcount(stringtime,direction):
-    # Transmits a countdown or -up time depending on the direction
+    # Transmits a count-down or -up time depending on the direction
     # Inputs:
     # - stringtime: str format "HH:MM:SS"
     # - direction: str format "up" or "down"
     global static
     print("Transmitting count ",stringtime)
     resetclock(static)
-    timesleep.sleep(delay)
+    time.sleep(delay)
 
     if direction == "up":
         clockremote.emit('arrow_up')
     else:
         clockremote.emit('arrow_down')
-    timesleep.sleep(delay)
+    time.sleep(delay)
     clockremote.emit('edit')
 
     for digit in stringtime:
         if not digit == ':':
             print(digit)
-            timesleep.sleep(delay)
+            time.sleep(delay)
             clockremote.emit(digit)
-    timesleep.sleep(delay)
+    time.sleep(delay)
     clockremote.emit('edit')
-    timesleep.sleep(delay)
+    time.sleep(delay)
     clockremote.emit('ok')
     static = False
 

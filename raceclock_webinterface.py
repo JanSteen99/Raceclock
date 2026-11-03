@@ -10,15 +10,15 @@ import threading
 import raceclock_clockfunctions as clock
 import raceclock_APIfunctions as API
 import time
-from datetime import datetime
 
 # Inputs
 bluepin = 16 #GPIO pin
 greenpin = 6 #GPIO pin
 redpin = 5 #GPIO pin
+
+IP = "192.168.12.11"  # rr-Server
 eventid = "0"
 APIkey = "0"
-IP = "192.168.12.11"  # rr-Server
 
 autoupdate = True
 showlaps = False
@@ -106,6 +106,10 @@ def handleRequest(actionid):
                 clock.resetclock(clock.static)
             elif actionid == "toggle10sec":
                 clock.toggle10sectimer()
+            elif actionid == "togglebrightness":
+                clock.togglebrightness()
+            elif actionid == "togglevolume":
+                clock.togglevolume()
             elif actionid == "showkeyidip":
                 print("Sending eventID, API key and IP address to HTML")
                 return jsonify(text1=eventid,
